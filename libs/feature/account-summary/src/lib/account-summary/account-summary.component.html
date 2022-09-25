@@ -1,27 +1,38 @@
 <h1>Account Summary</h1>
-<!-- TODO: 6. Angular ngFor, refactor, and bonus points -->
-<!-- TODO: 7. Accessibility, table markup, form control -->
 <div class="account-summary">
-  <section>
-    <table>
-      <tr>
-        <th scope="col">Account Name</th>
-        <th scope="col">Balance</th>
-        <th scope="col">
-          <label>Account Type</label>
-          <select [(ngModel)]="accountsFilter">
-            <option value="">None</option>
-            <option value="cad">CAD</option>
-            <option value="usd">USD</option>
-          </select>
-        </th>
-      </tr>
-      <tr *ngFor="let account of filterAccounts(accounts)">
-        <!-- TODO: 8. route to detail view -->
-        <th><a>{{account.id}}</a></th>
-        <td>{{account.balance}}</td>
-        <td>{{account.currency}}</td>
-      </tr>
-    </table>
-  </section>
+  <form [formGroup]="accountsForm">
+    <section>
+      <table>
+        <thead>
+          <th *ngFor="let th of displayedColumns" scope="col">
+            <span *ngIf="th.type === 'default'">{{ th.label }}</span>
+            <ng-container *ngIf="th.type === 'select'">
+              <label>{{ th.label }}</label>
+              <select [name]="th.type" formControlName="{{ th?.formControl }}">
+                <option
+                  *ngFor="let option of th.options"
+                  [value]="option.value"
+                >
+                  {{ option.label }}
+                </option>
+              </select>
+            </ng-container>
+          </th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let account of accounts$ | async">
+            <th *ngFor="let th of displayedColumns">
+              <a
+                *ngIf="th.key === 'id'"
+                [routerLink]="['account', account[th.key]]"
+              >
+                {{ account[th.key] }}
+              </a>
+              <span *ngIf="!(th.key === 'id')">{{ account[th.key] }}</span>
+            </th>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </form>
 </div>

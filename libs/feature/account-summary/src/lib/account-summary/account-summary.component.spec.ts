@@ -1,8 +1,12 @@
-import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  flush,
+  TestBed,
+} from '@angular/core/testing';
 import { Account } from 'libs/shared/services/src/lib/account';
 import { AccountSummaryComponent } from './account-summary.component';
 
-// TODO: 9. Topics in this file: Angular Unit Testing w/ Jest
 describe('AccountSummaryComponent', () => {
   let component: AccountSummaryComponent;
   let fixture: ComponentFixture<AccountSummaryComponent>;
@@ -24,17 +28,32 @@ describe('AccountSummaryComponent', () => {
   it('should retrieve accounts', () => {
     expect.assertions(2);
     expect(component.accounts$).toBeTruthy();
-    component.accounts$.subscribe(acc => {
+    component.accounts$.subscribe((acc) => {
       expect(acc.length).toBe(4);
     });
   });
 
-  describe("#filterAccounts", () => {
+  describe('#filterAccounts', () => {
     it('should return filter accounts', () => {
-      // TODO: 10. this test isn't doing anything atm, how can we make it more meaningful?
-      const accounts: Account[] = [];
-      const filtered = component.filterAccounts(accounts);
-      expect(filtered).toBe([]);
+      const accounts: Account[] = [
+        { id: '1234', balance: 7500, currency: 'cad' },
+        { id: '1235', balance: 4500, currency: 'cad' },
+        { id: '1236', balance: 2102, currency: 'usd' },
+      ];
+      const filtered = component.filterAccounts(accounts, 'usd');
+      expect(filtered).toEqual([
+        { id: '1236', balance: 2102, currency: 'usd' },
+      ]);
+    });
+
+    it('should return filter accounts', () => {
+      const accounts: Account[] = [
+        { id: '1234', balance: 7500, currency: 'cad' },
+        { id: '1235', balance: 4500, currency: 'cad' },
+        { id: '1236', balance: 2102, currency: 'usd' },
+      ];
+      const filtered = component.filterAccounts(accounts, '');
+      expect(filtered).toEqual(accounts);
     });
   });
 });
